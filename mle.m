@@ -4,11 +4,11 @@ function f  = mle(x,n_obs,n_region,home,work,fhome,fwork, distance, income, wage
 % parameters
 beta = 0.95;
 gamma_w_1 = x(1:9);
-gamma_w_2= x(10:14);
+gamma_w_2= x(10:13);
 gamma_w_3 = zeros(n_region,1);
-gamma_w_3(1:n_region-1) = x(14+1:14+n_region-1);
+gamma_w_3(1:n_region-1) = x(13+1:13+n_region-1);
 gamma_w_4 = zeros(n_region,1);
-gamma_w_4(1:n_region-1) = x(28+1:28+n_region-1);
+gamma_w_4(1:n_region-1) = x(27+1:27+n_region-1);
 sigma_w = 1;
 T=5;
 
@@ -30,7 +30,7 @@ for h=1:n_region
         for i=1:40
             lnC2(h,j) = lnC2(h,j) + beta^(i)*(log(income(j,i)+gamma_w_2(1))+gamma_w_1(7)/gamma_w_1(6)*rent(h,5)+gamma_w_1(1)/gamma_w_1(6)*(h~=j)+gamma_w_1(4)/gamma_w_1(6)*distance(h,j)+ ...
                 gamma_w_1(5)/gamma_w_1(6)*distance(h,j)^2+gamma_w_1(8)/gamma_w_1(6)*age(j,5)+gamma_w_1(9)/gamma_w_1(6)*age(h,5)+gamma_w_2(2)/gamma_w_1(6)+ ...
-                gamma_w_2(3)/gamma_w_1(6)*(h~=j)+gamma_w_2(4)/gamma_w_1(6)*(5+i)+gamma_w_2(5)/gamma_w_1(6)*(5+i)^2+gamma_w_3(h)/gamma_w_1(6)+gamma_w_4(j)/gamma_w_1(6));
+                gamma_w_2(3)/gamma_w_1(6)*(h~=j)+gamma_w_2(4)/gamma_w_1(6)*(5+i)+gamma_w_3(h)/gamma_w_1(6)+gamma_w_4(j)/gamma_w_1(6));
         end
     end
 end
@@ -54,12 +54,12 @@ for t = T:-1:1
                             end
                         else
                             if t==T
-                                temp1 = [(h~=j) (fh~=h) (fj~=j) distance(h,j) distance(h,j)^2 log(exp(wage(j,t))+gamma_w_2(1)) rent(h,t) age(j,t) age(h,t) 1 (h~=j) t t^2];
-                                V(t, mom+1, n_region*(h-1)+j,n_region*(fh-1)+fj) = gamma_w_1(6)*lnC2(h,j) +temp1(1:9)*gamma_w_1 +temp1(10:13)*gamma_w_2(2:5)+ gamma_w_3(h)+gamma_w_4(j);
+                                temp1 = [(h~=j) (fh~=h) (fj~=j) distance(h,j) distance(h,j)^2 log(exp(wage(j,t))+gamma_w_2(1)) rent(h,t) age(j,t) age(h,t) 1 (h~=j) t];
+                                V(t, mom+1, n_region*(h-1)+j,n_region*(fh-1)+fj) = gamma_w_1(6)*lnC2(h,j) +temp1(1:9)*gamma_w_1 +temp1(10:12)*gamma_w_2(2:4)+ gamma_w_3(h)+gamma_w_4(j);
                             else
-                                temp1 = [(h~=j) (fh~=h) (fj~=j) distance(h,j) distance(h,j)^2 log(exp(wage(j,t))+gamma_w_2(1)) rent(h,t) age(j,t) age(h,t) 1 (h~=j) t t^2];
+                                temp1 = [(h~=j) (fh~=h) (fj~=j) distance(h,j) distance(h,j)^2 log(exp(wage(j,t))+gamma_w_2(1)) rent(h,t) age(j,t) age(h,t) 1 (h~=j) t];
                                 
-                                V(t, mom+1, n_region*(h-1)+j,n_region*(fh-1)+fj) = temp1(1:9)*gamma_w_1+temp1(10:13)*gamma_w_2(2:5)+gamma_w_3(h)+gamma_w_4(j)+beta*EV(t,n_region*(h-1)+j);
+                                V(t, mom+1, n_region*(h-1)+j,n_region*(fh-1)+fj) = temp1(1:9)*gamma_w_1+temp1(10:12)*gamma_w_2(2:4)+gamma_w_3(h)+gamma_w_4(j)+beta*EV(t,n_region*(h-1)+j);
                             end
                         end
 
